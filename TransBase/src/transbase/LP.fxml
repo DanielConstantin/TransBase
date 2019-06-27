@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.web.WebView?>
+
+<AnchorPane id="AnchorPane" prefHeight="489.0" prefWidth="777.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="transbase.LPController">
+   <children>
+      <WebView fx:id="webview" layoutX="6.0" layoutY="193.0" prefHeight="293.0" prefWidth="717.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" />
+      <TableView fx:id="tblLP" prefHeight="235.0" prefWidth="771.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+        <columns>
+          <TableColumn fx:id="tcolCod" prefWidth="75.0" text="cod" />
+          <TableColumn fx:id="tcolDenFz0" prefWidth="75.0" text="Furnizor0" />
+            <TableColumn fx:id="tcolDenFz" prefWidth="75.0" text="Supplier" />
+            <TableColumn fx:id="tcolDepozit" prefWidth="75.0" text="Warehouse" />
+            <TableColumn fx:id="tcolStr" prefWidth="75.0" text="Street" />
+            <TableColumn fx:id="tcolCodOras" prefWidth="75.0" text="Postal Code" />
+            <TableColumn fx:id="tcolOras" prefWidth="75.0" text="City" />
+            <TableColumn fx:id="tcolTaraISO" prefWidth="75.0" text="Country" />
+            <TableColumn fx:id="tcolTara" prefWidth="75.0" text="Country" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
