@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<AnchorPane id="AnchorPane" prefHeight="520.0" prefWidth="1012.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="transbase.LPController">
+   <children>
+      <VBox layoutX="3.0" layoutY="33.0" prefHeight="214.0" prefWidth="1005.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="273.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="33.0">
+         <children>
+            <TableView fx:id="tblLP" prefHeight="172.0" prefWidth="1005.0" stylesheets="@resources/tableview.css" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
+                <columns>
+                <TableColumn fx:id="tcolCod" maxWidth="-1.0" minWidth="60.0" prefWidth="60.0" text="cod" />
+                  <TableColumn fx:id="tcolDenFz" maxWidth="180.0" minWidth="160.0" prefWidth="160.0" text="Supplier" />
+                  <TableColumn fx:id="tcolDepozit" maxWidth="180.0" minWidth="140.0" prefWidth="160.0" text="Warehouse" />
+                  <TableColumn fx:id="tcolStr" maxWidth="360.0" minWidth="180.0" prefWidth="260.0" text="Street" />
+                  <TableColumn fx:id="tcolCodOras" maxWidth="80.0" minWidth="80.0" text="Postal Code" />
+                  <TableColumn fx:id="tcolOras" maxWidth="180.0" minWidth="120.0" prefWidth="140.0" resizable="false" text="City" />
+                  <TableColumn fx:id="tcolTara" maxWidth="180.0" minWidth="100.0" prefWidth="145.333251953125" text="Country" />
+                  <TableColumn fx:id="tcolTaraISO" maxWidth="180.0" minWidth="100.0" prefWidth="145.333251953125" text="Country" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+         </children>
+      </VBox>
+      <Pane layoutX="5.0" layoutY="250.0" prefHeight="258.0" prefWidth="454.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="5.0">
+         <children>
+            <Label fx:id="lbWarehouse" layoutX="20.0" layoutY="85.0" prefHeight="17.0" prefWidth="74.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Warehouse:" />
+            <TextField fx:id="txtWarehause" layoutX="97.0" layoutY="81.0" prefHeight="25.0" prefWidth="319.0" style="-fx-background-color: #424242; -fx-text-fill: white; -fx-border-color: grey;" />
+            <Label fx:id="lbAddress" layoutX="20.0" layoutY="118.0" prefHeight="17.0" prefWidth="74.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Address:" />
+            <TextField fx:id="txtAddress" layoutX="97.0" layoutY="114.0" prefHeight="25.0" prefWidth="319.0" style="-fx-background-color: #424242; -fx-text-fill: white; -fx-border-color: grey;" />
+            <Label fx:id="lbPostalCode" layoutX="20.0" layoutY="150.0" prefHeight="17.0" prefWidth="74.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Postal Code:" />
+            <TextField fx:id="txtPostalC" layoutX="97.0" layoutY="146.0" prefHeight="25.0" prefWidth="74.0" style="-fx-background-color: #424242; -fx-text-fill: white; -fx-border-color: grey;" />
+            <Label fx:id="lbCity" layoutX="177.0" layoutY="150.0" prefHeight="17.0" prefWidth="31.0" style="-fx-background-color: black; -fx-text-fill: white;" text="City:" />
+            <TextField fx:id="txtCity" layoutX="208.0" layoutY="146.0" prefHeight="25.0" prefWidth="208.0" style="-fx-background-color: #424242; -fx-text-fill: white; -fx-border-color: grey;" />
+            <Label fx:id="lbCountry" layoutX="20.0" layoutY="191.0" prefHeight="17.0" prefWidth="74.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Country:" />
+            <Label fx:id="lbSupplier" layoutX="20.0" layoutY="50.0" prefHeight="17.0" prefWidth="63.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Supplier:" />
+            <ComboBox fx:id="cmbCountry" layoutX="96.0" layoutY="187.0" prefHeight="25.0" prefWidth="319.0" style="-fx-background-color: #424242; -fx-text-fill: white; -fx-border-color: grey;" />
+            <ComboBox fx:id="cmbSupplier" layoutX="96.0" layoutY="46.0" prefHeight="25.0" prefWidth="319.0" style="-fx-background-color: #424242; -fx-text-fill: white; -fx-border-color: grey;" />
+         </children>
+      </Pane>
+      <Label fx:id="lblNotvalid" alignment="CENTER" contentDisplay="CENTER" layoutX="548.0" layoutY="344.0" prefHeight="17.0" prefWidth="359.0" text="das" textAlignment="CENTER" textFill="#eb0d0d" visible="false" AnchorPane.bottomAnchor="159.0" AnchorPane.leftAnchor="548.0" AnchorPane.rightAnchor="105.0">
+         <font>
+            <Font name="Gill Sans MT Bold" size="12.0" />
+         </font>
+      </Label>
+      <WebView fx:id="webview" layoutX="509.0" layoutY="250.0" maxHeight="-1.0" maxWidth="-1.0" minHeight="258.0" minWidth="450.0" prefHeight="258.0" prefWidth="493.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="509.0" AnchorPane.rightAnchor="10.0" />
+   </children>
+</AnchorPane>

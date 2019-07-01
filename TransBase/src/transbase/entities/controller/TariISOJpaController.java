@@ -166,7 +166,7 @@ public class TariISOJpaController implements Serializable {
             String[]strarr= new String[lst.size()]; 
             
             for(int i=0;i<lst.size();i++){
-                strarr[i]=lst.get(i).toString();
+                strarr[i]=lst.get(i).getTara2L();
             }
             
             return strarr;

@@ -79,7 +79,7 @@ public class ComandaTransp implements Serializable {
     @JoinColumn(name = "tara", referencedColumnName = "Tara2L")
     @ManyToOne
     private TariISO tara;
-
+    
     public ComandaTransp() {
     }
 
@@ -237,7 +237,7 @@ public class ComandaTransp implements Serializable {
 
     @Override
     public String toString() {
-        return "transbase.entities.ComandaTransp[ cod=" + cod + " ]";
+        return  cod.toString();
     }
     
 }

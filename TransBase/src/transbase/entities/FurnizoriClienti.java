@@ -179,7 +179,7 @@ public class FurnizoriClienti implements Serializable {
 
     @Override
     public String toString() {
-        return "transbase.entities.FurnizoriClienti[ codScala=" + codScala + " ]";
+        return denumire;
     }
     
 }

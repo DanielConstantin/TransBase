@@ -1,0 +1,62 @@
+
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>$title</title>
+
+    <meta charset="utf-8" />
+
+    <script type='text/javascript'>
+
+    var map;
+
+
+
+    function GetMap() {
+
+        map = new Microsoft.Maps.Map('#myMap', {
+
+            center: new Microsoft.Maps.Location($Lat, $Long)
+
+        });
+
+
+
+        var center = map.getCenter();
+
+
+
+        //Create custom Pushpin
+
+        var pin = new Microsoft.Maps.Pushpin(center, {
+
+            color: 'red'
+
+        });
+
+
+
+        //Add the pushpin to the map
+
+        map.entities.push(pin);
+
+    }
+
+    </script>
+
+    <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=ACpIVYe9vH3LKg8l3AxF~2uoB07X11dBdvit26Fx4tw~AsJdww2NqEObxMWc0DQ1oJCInEjoJ_bij0gOYv2-tzvykiRlLuHkFRfqBpnmmvnS' async defer></script>
+
+</head>
+
+<body>
+
+    <div id="myMap" style="position:relative;width:750px;height:240px;"></div>
+
+</body>
+
+</html>
+

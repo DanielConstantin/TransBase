@@ -113,7 +113,7 @@ public class Orasedest implements Serializable {
 
     @Override
     public String toString() {
-        return "transbase.entities.Orasedest[ codOrdest=" + codOrdest + " ]";
+        return oras;
     }
     
 }

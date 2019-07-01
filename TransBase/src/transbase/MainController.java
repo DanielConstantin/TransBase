@@ -49,7 +49,8 @@ public class MainController implements Initializable {
     private Button btnSuppliers;
     @FXML
     private Button btnReports;
-
+    @FXML
+    private VBox vb;
     /**
      * Initializes the controller class.
      */
@@ -61,7 +62,9 @@ public class MainController implements Initializable {
           } catch (IOException ex) {
               Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
           }
-       
+      subscene.widthProperty().bind(vb.widthProperty());
+      subscene.heightProperty().bind(vb.heightProperty());
+      subscene.setFocusTraversable(true);  
           
     }    
 

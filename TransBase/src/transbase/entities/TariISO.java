@@ -113,7 +113,9 @@ public class TariISO implements Serializable {
 
     @Override
     public String toString() {
-        return tara2L;
-    }
+        
+        
+       return tara2L;
     
+                }
 }
