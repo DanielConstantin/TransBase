@@ -49,6 +49,8 @@ import javax.persistence.Persistence;
 import javax.xml.parsers.ParserConfigurationException;
 import netscape.javascript.JSObject;
 import org.apache.commons.io.FileUtils;
+import org.controlsfx.control.Notifications;
+import org.controlsfx.control.PrefixSelectionComboBox;
 import org.controlsfx.control.ToggleSwitch;
 import org.controlsfx.control.table.TableFilter;
 import org.controlsfx.control.table.TableFilter.Builder;
@@ -57,9 +59,12 @@ import org.controlsfx.control.tableview2.FilteredTableView;
 import org.json.simple.parser.ParseException;
 import org.w3c.dom.Document;
 import transbase.entities.ComandaTransp;
+import transbase.entities.FurnizoriClienti;
 import transbase.entities.TariISO;
 import transbase.entities.controller.ComandaTranspJpaController;
+import transbase.entities.controller.FurnizoriClientiJpaController;
 import transbase.entities.controller.TariISOJpaController;
+import transbase.util.AutoCompleteComboBoxListener;
 import transbase.util.GeocodeFetcher;
 
 
@@ -73,6 +78,7 @@ public class LPController implements Initializable {
     static String lon;
     static int webvpage;
     static ComandaTransp selectedLP;
+    static int selRow;
      WebEngine we;
    @FXML
     private WebView webview;
@@ -138,11 +144,11 @@ public class LPController implements Initializable {
     @FXML
     private Label lbSupplier;
 
-    @FXML
-    private ComboBox<?> cmbCountry;
+  //  @FXML
+  //  private ComboBox<TariISO> cmbCountry;
 
-    @FXML
-    private ComboBox<?> cmbSupplier;
+   // @FXML
+ //   private ComboBox<FurnizoriClienti> cmbSupplier;
     @FXML
     private Button btnFilUpd;
       @FXML
@@ -151,10 +157,16 @@ public class LPController implements Initializable {
     private Button btnUpdate;
       @FXML
     private Button btnDelete;
-      
+     @FXML
+    private PrefixSelectionComboBox<TariISO> cmbCountry;
+      @FXML
+    private PrefixSelectionComboBox<FurnizoriClienti> cmbSupplier;
     TableFilter<ComandaTransp> tableFilter;
     ObservableList<ComandaTransp> lst; 
+    ObservableList<TariISO> lstTari;
+    ObservableList<FurnizoriClienti> lstFzCl;
     javax.swing.Timer tmrBanner;
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("TransBasePU");
     /**
      * Initializes the controller class.
      */
@@ -163,39 +175,32 @@ public class LPController implements Initializable {
         webvpage=2;
        webview.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );
          initCol();
-        // tableFilter.forTableView(tblLP).lazy(false).apply();
+     
          bindTrasnportersTable();
-     //   tableFilter = new TableFilter<>(tblLP);
-      // tableFilter.forTableView(tblLP).lazy(false).apply();
-       //  Builder<ComandaTransp> builder = TableFilter.forTableView(this.tblLP);
-       //     builder.apply();
+         getFurnizoriList();
+         getTarilst();
         
             
         we = webview.getEngine();
-        //URL urlHello = getClass().getResource("resources/Mnew.html");
-       // we.load(urlHello.toExternalForm());
+       
     
         tblLP.setOnMouseClicked((MouseEvent event) -> {
         if (event.getClickCount() > 1) {
         onEdit();
         }else{
         
-        selectedLP = tblLP.getSelectionModel().getSelectedItem();
-        if(!selectedLP.getCodOras().isEmpty()|| !selectedLP.getOras().isEmpty()){
-        try {
-            prepareMap(selectedLP.getStr(),selectedLP.getOras(), selectedLP.getCodOras(),selectedLP.getTara().getTara2L() );
-        } catch (IOException | NullPointerException ex) {
-               lblNotvalid.setVisible(true);
-               lblNotvalid.setText("Location can't be Geocoded");
-               webview.setVisible(false);
-            Logger.getLogger(LPController.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-    }else{
-            lblNotvalid.setVisible(true);
-               lblNotvalid.setText("Location can't be Geocoded");
-               webview.setVisible(false);
+            try {
+                selectedLP = tblLP.getSelectionModel().getSelectedItem();
+                if(prepareMap(selectedLP.getStr(),selectedLP.getOras(), selectedLP.getCodOras(),selectedLP.getTara().getTara2L())){
+                    
+                }else{
+                    lblNotvalid.setVisible(true);
+                    lblNotvalid.setText("Location can't be Geocoded");
+                    webview.setVisible(false);
+                }   } catch (IOException ex) {
+                Logger.getLogger(LPController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-    }
         });    
            
        
@@ -223,23 +228,19 @@ public class LPController implements Initializable {
         
     }  
     public void bindTrasnportersTable(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("TransBasePU");
+        selRow = tblLP.getSelectionModel().getSelectedIndex();
+        
          ComandaTranspJpaController controllerCT = new ComandaTranspJpaController(emf);
          lst = FXCollections.observableArrayList(controllerCT.findComandaTranspEntities());
           tblLP.getItems().clear();
          tblLP.setItems(lst);
-       //  tableFilter = new TableFilter<>(tblLP);
-//tableFilter.forTableView(tblLP).lazy(false).apply();
-         
-    //    tblLP.setEditable(false);
-     //    tblLP.getSelectionModel().clearAndSelect(0);
-    //  if(tableFilter.getBackingList().size()>0){
-    //   tableFilter.getBackingList().clear();
-       
+         tblLP.getSelectionModel().select(selRow);
+   
       
     }
     public void initCol(){
         tcolCod.setCellValueFactory(new PropertyValueFactory<>("cod"));
+        tcolCod.setVisible(false);
      //   tcolDenFz0.setCellValueFactory(new PropertyValueFactory<>("denFurnizor0"));
         tcolDenFz.setCellValueFactory(new PropertyValueFactory<>("denFurnizor"));
         tcolDepozit.setCellValueFactory(new PropertyValueFactory<>("depozit"));
@@ -254,24 +255,42 @@ public class LPController implements Initializable {
          tcolTara.setCellValueFactory(new PropertyValueFactory<>("tara"));
          tcolTara.setCellFactory(ComboBoxTableCell.forTableColumn(controller.findTariISOString()));  
          tcolTaraISO.setCellValueFactory(new PropertyValueFactory<>("tara"));
-
-    }
-     private Object[] getTarilst(){
-         EntityManagerFactory emf = Persistence.createEntityManagerFactory("TransBasePU");
-         TariISOJpaController controller = new TariISOJpaController(emf);
+         tcolTaraISO.setVisible(false);
          
-         ObservableList<TariISO> lstTari =  FXCollections.observableArrayList(controller.findTariISOEntities());
-         Object[] tarile = lstTari.toArray();
-         return tarile;
-     } 
-     
+          tcolDenFz.setSortable(false);
+         tcolDepozit.setSortable(false);
+         tcolStr.setSortable(false);
+         tcolDepozit.setSortable(false);
+         tcolCodOras.setSortable(false);
+         tcolOras.setSortable(false);
+         tcolTara.setSortable(false);
+    }
+    public void getTarilst(){
+         
+         TariISOJpaController controllerT = new TariISOJpaController(emf);
+         
+         lstTari =  FXCollections.observableArrayList(controllerT.findTariISOEntities());
+         lstTari.sorted();
+       //  Object[] tarile = lstTari.toArray();
+         cmbCountry.setItems(lstTari);
  
-    private void prepareMap(String Street, String City, String postalC, String isoCountry) throws IOException{
+     } 
+    public void getFurnizoriList(){
+         
+         FurnizoriClientiJpaController controllerFC = new FurnizoriClientiJpaController(emf);
+         
+        lstFzCl =  FXCollections.observableArrayList(controllerFC.findFurnizoriClientiEntities());
+        // Object[] FurnizClienti = lstFzCl.toArray();
+         cmbSupplier.setItems(lstFzCl);
+         
+     } 
+ 
+    private boolean prepareMap(String Street, String City, String postalC, String isoCountry) throws IOException{
         if (postalC!=null && !postalC.matches("\\d*$")) {
             postalC=(postalC.replaceAll("[^\\d]", ""));
         }        
          if(getGeolocation(Street, City, postalC, isoCountry)==false){
-             getGeolocation(Street, City, postalC, isoCountry);
+             
                lblNotvalid.setVisible(true);
                lblNotvalid.setText("Location can't be Geocoded");
                webview.setVisible(false);
@@ -306,7 +325,7 @@ public class LPController implements Initializable {
     }
      
            }
-    
+    return true;
     }
     public void onEdit() {
     // check the table's selected item and get selected item
@@ -316,8 +335,10 @@ public class LPController implements Initializable {
         txtCity.setText(selectedLP.getOras());
         txtPostalC.setText(selectedLP.getCodOras());
         txtAddress.setText(selectedLP.getStr());
+        cmbSupplier.setValue(selectedLP.getCodFurnizor());
+        cmbCountry.setValue(selectedLP.getTara());
+        txtWarehause.setText(selectedLP.getDepozit());
     }
-    
 }
     private boolean getGeolocation(String Street, String City,String postalC,String isoCountry){
          try {
@@ -344,7 +365,14 @@ public class LPController implements Initializable {
         if(btnFilUpd.getText().equals("Switch to Filtered but NOT Updatable")){
         tableFilter = new TableFilter<>(tblLP);
          tmrBanner.stop();
-       
+           tcolDenFz.setSortable(true);
+         tcolDepozit.setSortable(true);
+         tcolStr.setSortable(true);
+         tcolDepozit.setSortable(true);
+         tcolCodOras.setSortable(true);
+         tcolOras.setSortable(true);
+         tcolTara.setSortable(true);
+         
          btnFilUpd.setText("Switch to Updatable but NOT Filtered");   
          btnFilUpd.setStyle("-fx-background-color: #909396; -fx-background-radius: 40 40 40 40");
         }else{
@@ -354,9 +382,39 @@ public class LPController implements Initializable {
          tmrBanner.setDelay(5000);
          btnFilUpd.setText("Switch to Filtered but NOT Updatable");
          btnFilUpd.setStyle("-fx-background-color: #5f6369; -fx-background-radius: 40 40 40 40");
-  
+         tcolDenFz.setSortable(false);
+         tcolDepozit.setSortable(false);
+         tcolStr.setSortable(false);
+         tcolDepozit.setSortable(false);
+         tcolCodOras.setSortable(false);
+         tcolOras.setSortable(false);
+         tcolTara.setSortable(false);
     }
 
         }
+    
+    public void ButtonHandler(ActionEvent ae){
+        if(ae.getSource()==btnSave){
+            if(cmbSupplier.valueProperty().get()==null || cmbCountry.valueProperty().get()==null || 
+                    txtAddress.getText().isEmpty()||txtCity.getText().isEmpty() || txtPostalC.getText().isEmpty() ){
+                Notifications.create() .title("Invalid Input") .text("All fields must be filled") .showWarning();
+            } else{
+               ComandaTransp ct= new ComandaTransp();
+               ct.setCodFurnizor(cmbSupplier.getValue());
+               ct.setCodOras(txtPostalC.getText());
+               ct.setDenFurnizor(cmbSupplier.getValue().getDenumire());
+               ct.setDepozit(txtWarehause.getText());
+               ct.setOras(txtCity.getText());
+               ct.setStr(txtAddress.getText());
+               ct.setTara(cmbCountry.getValue());
+            }
+        }
+        if(ae.getSource()==btnUpdate){
+            
+        }
+        if(ae.getSource()==btnDelete){
+            
+        }
+    }
     
 }
