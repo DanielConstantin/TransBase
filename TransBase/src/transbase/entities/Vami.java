@@ -16,14 +16,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  *
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "vami")
 @NamedQueries({
     @NamedQuery(name = "Vami.findAll", query = "SELECT v FROM Vami v")
     , @NamedQuery(name = "Vami.findByCodVama", query = "SELECT v FROM Vami v WHERE v.codVama = :codVama")
@@ -39,15 +37,11 @@ public class Vami implements Serializable {
     @Basic(optional = false)
     @Column(name = "cod_vama")
     private Integer codVama;
-    @Column(name = "denumire")
     private String denumire;
     @Column(name = "or_vama")
     private String orVama;
-    @Column(name = "adr")
     private String adr;
-    @Column(name = "unloading")
     private String unloading;
-    @Column(name = "sorting")
     private Integer sorting;
     @JoinColumn(name = "oras", referencedColumnName = "cod_ordest")
     @ManyToOne

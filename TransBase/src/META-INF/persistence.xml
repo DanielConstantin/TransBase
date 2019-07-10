@@ -16,6 +16,7 @@
     <class>transbase.entities.CmdS</class>
     <class>transbase.entities.Vami</class>
     <class>transbase.entities.Inc2</class>
+    <class>transbase.entities.Moneda</class>
     <shared-cache-mode>NONE</shared-cache-mode>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:sqlserver://DANIELCONST\BAZATRANSPORT;databaseName=Transport; IntegratedSecurity=true;"/>

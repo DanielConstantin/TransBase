@@ -45,31 +45,21 @@ public class ComandaTransp implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "cod")
     private Long cod;
     @Column(name = "den_furnizor0")
     private String denFurnizor0;
     @Column(name = "den_furnizor")
     private String denFurnizor;
-    @Column(name = "depozit")
     private String depozit;
-    @Column(name = "str")
     private String str;
     @Column(name = "cod_oras")
     private String codOras;
-    @Column(name = "oras")
     private String oras;
-    @Column(name = "paletiSchimb")
     private String paletiSchimb;
-    @Column(name = "P1")
     private String p1;
-    @Column(name = "P2")
     private String p2;
-    @Column(name = "P3")
     private String p3;
-    @Column(name = "P4")
     private String p4;
-    @Column(name = "P5")
     private String p5;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "lodpl")
     private List<Loadingpl> loadingplList;
@@ -79,7 +69,7 @@ public class ComandaTransp implements Serializable {
     @JoinColumn(name = "tara", referencedColumnName = "Tara2L")
     @ManyToOne
     private TariISO tara;
-    
+
     public ComandaTransp() {
     }
 
@@ -237,7 +227,7 @@ public class ComandaTransp implements Serializable {
 
     @Override
     public String toString() {
-        return  cod.toString();
+        return "transbase.entities.ComandaTransp[ cod=" + cod + " ]";
     }
     
 }

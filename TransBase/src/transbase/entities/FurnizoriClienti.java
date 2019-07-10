@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -32,16 +34,13 @@ import javax.persistence.Table;
     , @NamedQuery(name = "FurnizoriClienti.findByTara", query = "SELECT f FROM FurnizoriClienti f WHERE f.tara = :tara")
     , @NamedQuery(name = "FurnizoriClienti.findByTransPredef", query = "SELECT f FROM FurnizoriClienti f WHERE f.transPredef = :transPredef")
     , @NamedQuery(name = "FurnizoriClienti.findByTipPredef", query = "SELECT f FROM FurnizoriClienti f WHERE f.tipPredef = :tipPredef")
-    , @NamedQuery(name = "FurnizoriClienti.findByTermenPl", query = "SELECT f FROM FurnizoriClienti f WHERE f.termenPl = :termenPl")
-    , @NamedQuery(name = "FurnizoriClienti.findByMoneda", query = "SELECT f FROM FurnizoriClienti f WHERE f.moneda = :moneda")})
+    , @NamedQuery(name = "FurnizoriClienti.findByTermenPl", query = "SELECT f FROM FurnizoriClienti f WHERE f.termenPl = :termenPl")})
 public class FurnizoriClienti implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "CodScala")
     private String codScala;
-    @Column(name = "Denumire")
     private String denumire;
     @Column(name = "pers_contact")
     private String persContact;
@@ -49,16 +48,16 @@ public class FurnizoriClienti implements Serializable {
     private String persContactemail;
     @Column(name = "PersResp_email")
     private String persRespemail;
-    @Column(name = "Tara")
-    private String tara;
-    @Column(name = "TransPredef")
     private String transPredef;
-    @Column(name = "TipPredef")
     private Integer tipPredef;
     @Column(name = "Termen_Pl")
     private Short termenPl;
-    @Column(name = "moneda")
-    private String moneda;
+    @JoinColumn(name = "moneda", referencedColumnName = "id_Moneda")
+    @ManyToOne
+    private Moneda moneda;
+    @JoinColumn(name = "Tara", referencedColumnName = "Tara2L")
+    @ManyToOne
+    private TariISO tara;
     @OneToMany(mappedBy = "codFurnizor")
     private List<ComandaTransp> comandaTranspList;
 
@@ -109,14 +108,6 @@ public class FurnizoriClienti implements Serializable {
         this.persRespemail = persRespemail;
     }
 
-    public String getTara() {
-        return tara;
-    }
-
-    public void setTara(String tara) {
-        this.tara = tara;
-    }
-
     public String getTransPredef() {
         return transPredef;
     }
@@ -141,12 +132,20 @@ public class FurnizoriClienti implements Serializable {
         this.termenPl = termenPl;
     }
 
-    public String getMoneda() {
+    public Moneda getMoneda() {
         return moneda;
     }
 
-    public void setMoneda(String moneda) {
+    public void setMoneda(Moneda moneda) {
         this.moneda = moneda;
+    }
+
+    public TariISO getTara() {
+        return tara;
+    }
+
+    public void setTara(TariISO tara) {
+        this.tara = tara;
     }
 
     public List<ComandaTransp> getComandaTranspList() {
@@ -179,7 +178,7 @@ public class FurnizoriClienti implements Serializable {
 
     @Override
     public String toString() {
-        return denumire;
+        return  denumire;
     }
     
 }

@@ -6,20 +6,19 @@
 package transbase.entities;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.OneToMany;
 
 /**
  *
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "TipTranzactie")
 @NamedQueries({
     @NamedQuery(name = "TipTranzactie.findAll", query = "SELECT t FROM TipTranzactie t")
     , @NamedQuery(name = "TipTranzactie.findByIdTip", query = "SELECT t FROM TipTranzactie t WHERE t.idTip = :idTip")
@@ -29,10 +28,10 @@ public class TipTranzactie implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "IdTip")
     private Integer idTip;
-    @Column(name = "Tip")
     private String tip;
+    @OneToMany(mappedBy = "tip")
+    private List<ListaIncarcari> listaIncarcariList;
 
     public TipTranzactie() {
     }
@@ -55,6 +54,14 @@ public class TipTranzactie implements Serializable {
 
     public void setTip(String tip) {
         this.tip = tip;
+    }
+
+    public List<ListaIncarcari> getListaIncarcariList() {
+        return listaIncarcariList;
+    }
+
+    public void setListaIncarcariList(List<ListaIncarcari> listaIncarcariList) {
+        this.listaIncarcariList = listaIncarcariList;
     }
 
     @Override

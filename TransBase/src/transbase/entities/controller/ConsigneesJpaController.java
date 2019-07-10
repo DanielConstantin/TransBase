@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import transbase.entities.TariISO;
 import transbase.entities.Inc2;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,11 @@ public class ConsigneesJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            TariISO codISOtara = consignees.getCodISOtara();
+            if (codISOtara != null) {
+                codISOtara = em.getReference(codISOtara.getClass(), codISOtara.getTara2L());
+                consignees.setCodISOtara(codISOtara);
+            }
             List<Inc2> attachedInc2List = new ArrayList<Inc2>();
             for (Inc2 inc2ListInc2ToAttach : consignees.getInc2List()) {
                 inc2ListInc2ToAttach = em.getReference(inc2ListInc2ToAttach.getClass(), inc2ListInc2ToAttach.getId());
@@ -49,6 +55,10 @@ public class ConsigneesJpaController implements Serializable {
             }
             consignees.setInc2List(attachedInc2List);
             em.persist(consignees);
+            if (codISOtara != null) {
+                codISOtara.getConsigneesList().add(consignees);
+                codISOtara = em.merge(codISOtara);
+            }
             for (Inc2 inc2ListInc2 : consignees.getInc2List()) {
                 Consignees oldConsigneeOfInc2ListInc2 = inc2ListInc2.getConsignee();
                 inc2ListInc2.setConsignee(consignees);
@@ -77,8 +87,14 @@ public class ConsigneesJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Consignees persistentConsignees = em.find(Consignees.class, consignees.getIdcons());
+            TariISO codISOtaraOld = persistentConsignees.getCodISOtara();
+            TariISO codISOtaraNew = consignees.getCodISOtara();
             List<Inc2> inc2ListOld = persistentConsignees.getInc2List();
             List<Inc2> inc2ListNew = consignees.getInc2List();
+            if (codISOtaraNew != null) {
+                codISOtaraNew = em.getReference(codISOtaraNew.getClass(), codISOtaraNew.getTara2L());
+                consignees.setCodISOtara(codISOtaraNew);
+            }
             List<Inc2> attachedInc2ListNew = new ArrayList<Inc2>();
             for (Inc2 inc2ListNewInc2ToAttach : inc2ListNew) {
                 inc2ListNewInc2ToAttach = em.getReference(inc2ListNewInc2ToAttach.getClass(), inc2ListNewInc2ToAttach.getId());
@@ -87,6 +103,14 @@ public class ConsigneesJpaController implements Serializable {
             inc2ListNew = attachedInc2ListNew;
             consignees.setInc2List(inc2ListNew);
             consignees = em.merge(consignees);
+            if (codISOtaraOld != null && !codISOtaraOld.equals(codISOtaraNew)) {
+                codISOtaraOld.getConsigneesList().remove(consignees);
+                codISOtaraOld = em.merge(codISOtaraOld);
+            }
+            if (codISOtaraNew != null && !codISOtaraNew.equals(codISOtaraOld)) {
+                codISOtaraNew.getConsigneesList().add(consignees);
+                codISOtaraNew = em.merge(codISOtaraNew);
+            }
             for (Inc2 inc2ListOldInc2 : inc2ListOld) {
                 if (!inc2ListNew.contains(inc2ListOldInc2)) {
                     inc2ListOldInc2.setConsignee(null);
@@ -132,6 +156,11 @@ public class ConsigneesJpaController implements Serializable {
                 consignees.getIdcons();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The consignees with id " + id + " no longer exists.", enfe);
+            }
+            TariISO codISOtara = consignees.getCodISOtara();
+            if (codISOtara != null) {
+                codISOtara.getConsigneesList().remove(consignees);
+                codISOtara = em.merge(codISOtara);
             }
             List<Inc2> inc2List = consignees.getInc2List();
             for (Inc2 inc2ListInc2 : inc2List) {

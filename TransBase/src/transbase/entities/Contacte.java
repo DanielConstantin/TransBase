@@ -14,14 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  *
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "contacte")
 @NamedQueries({
     @NamedQuery(name = "Contacte.findAll", query = "SELECT c FROM Contacte c")
     , @NamedQuery(name = "Contacte.findByIdPersoanaCont", query = "SELECT c FROM Contacte c WHERE c.idPersoanaCont = :idPersoanaCont")
@@ -30,7 +28,8 @@ import javax.persistence.Table;
     , @NamedQuery(name = "Contacte.findByTel", query = "SELECT c FROM Contacte c WHERE c.tel = :tel")
     , @NamedQuery(name = "Contacte.findByFax", query = "SELECT c FROM Contacte c WHERE c.fax = :fax")
     , @NamedQuery(name = "Contacte.findByTermenPl", query = "SELECT c FROM Contacte c WHERE c.termenPl = :termenPl")
-    , @NamedQuery(name = "Contacte.findByEmail", query = "SELECT c FROM Contacte c WHERE c.email = :email")})
+    , @NamedQuery(name = "Contacte.findByEmail", query = "SELECT c FROM Contacte c WHERE c.email = :email")
+    , @NamedQuery(name = "Contacte.findByMoneda", query = "SELECT c FROM Contacte c WHERE c.moneda = :moneda")})
 public class Contacte implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,18 +37,14 @@ public class Contacte implements Serializable {
     @Basic(optional = false)
     @Column(name = "id_persoana_cont")
     private Integer idPersoanaCont;
-    @Column(name = "nume")
     private String nume;
-    @Column(name = "companie")
     private String companie;
-    @Column(name = "tel")
     private String tel;
-    @Column(name = "fax")
     private String fax;
-    @Column(name = "termen pl")
+    @Column(name = "termen_pl")
     private Integer termenPl;
-    @Column(name = "email")
     private String email;
+    private String moneda;
     @OneToMany(mappedBy = "contacte")
     private List<Inc2> inc2List;
 
@@ -116,6 +111,14 @@ public class Contacte implements Serializable {
         this.email = email;
     }
 
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
     public List<Inc2> getInc2List() {
         return inc2List;
     }
@@ -146,7 +149,7 @@ public class Contacte implements Serializable {
 
     @Override
     public String toString() {
-        return "transbase.entities.Contacte[ idPersoanaCont=" + idPersoanaCont + " ]";
+        return companie;
     }
     
 }

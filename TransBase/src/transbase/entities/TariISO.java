@@ -8,7 +8,6 @@ package transbase.entities;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -33,16 +32,16 @@ public class TariISO implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "Tara2L")
     private String tara2L;
-    @Column(name = "Tara3L")
     private String tara3L;
-    @Column(name = "TaraDen")
     private String taraDen;
-    @Column(name = "TaraNum")
     private Integer taraNum;
     @OneToMany(mappedBy = "tara")
+    private List<FurnizoriClienti> furnizoriClientiList;
+    @OneToMany(mappedBy = "tara")
     private List<ComandaTransp> comandaTranspList;
+    @OneToMany(mappedBy = "codISOtara")
+    private List<Consignees> consigneesList;
 
     public TariISO() {
     }
@@ -83,12 +82,28 @@ public class TariISO implements Serializable {
         this.taraNum = taraNum;
     }
 
+    public List<FurnizoriClienti> getFurnizoriClientiList() {
+        return furnizoriClientiList;
+    }
+
+    public void setFurnizoriClientiList(List<FurnizoriClienti> furnizoriClientiList) {
+        this.furnizoriClientiList = furnizoriClientiList;
+    }
+
     public List<ComandaTransp> getComandaTranspList() {
         return comandaTranspList;
     }
 
     public void setComandaTranspList(List<ComandaTransp> comandaTranspList) {
         this.comandaTranspList = comandaTranspList;
+    }
+
+    public List<Consignees> getConsigneesList() {
+        return consigneesList;
+    }
+
+    public void setConsigneesList(List<Consignees> consigneesList) {
+        this.consigneesList = consigneesList;
     }
 
     @Override
@@ -113,9 +128,7 @@ public class TariISO implements Serializable {
 
     @Override
     public String toString() {
-        
-        
-       return tara2L;
+        return taraDen;
+    }
     
-                }
 }

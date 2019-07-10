@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -56,20 +57,42 @@ public class MainController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-          try {
-              Parent  root = FXMLLoader.load(getClass().getResource("LP.fxml"));
+        
+      try {
+              Parent  root = FXMLLoader.load(getClass().getResource("Contacte.fxml"));
               subscene.setRoot(root);
-          } catch (IOException ex) {
+                  } catch (IOException ex) {
               Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
-          }
+              
+                  }  
+        
       subscene.widthProperty().bind(vb.widthProperty());
       subscene.heightProperty().bind(vb.heightProperty());
       subscene.setFocusTraversable(true);  
-          
+        
     }    
 
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
+    @FXML   
+    public void ButtonAction(MouseEvent event) {
+        if(event.getSource()==btnLP){
+              try {
+              Parent  root = FXMLLoader.load(getClass().getResource("LP.fxml"));
+              subscene.setRoot(root);
+              
+                  } catch (IOException ex) {
+              Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+             
+        }
+        if(event.getSource()==btnTransporters){
+        try {
+              Parent  root = FXMLLoader.load(getClass().getResource("Contacte.fxml"));
+              subscene.setRoot(root);
+                  } catch (IOException ex) {
+              Logger.getLogger(MainController.class.getName()).log(Level.SEVERE, null, ex);
+              
+                  }
+        
     }
-    
+    }
 }

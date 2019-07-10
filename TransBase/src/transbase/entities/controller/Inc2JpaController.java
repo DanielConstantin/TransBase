@@ -22,6 +22,7 @@ import javax.persistence.EntityManagerFactory;
 import transbase.entities.CmdS;
 import transbase.entities.Inc2;
 import transbase.entities.controller.exceptions.NonexistentEntityException;
+import transbase.entities.controller.exceptions.PreexistingEntityException;
 
 /**
  *
@@ -38,7 +39,7 @@ public class Inc2JpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Inc2 inc2) {
+    public void create(Inc2 inc2) throws PreexistingEntityException, Exception {
         if (inc2.getLoadingplList() == null) {
             inc2.setLoadingplList(new ArrayList<Loadingpl>());
         }
@@ -117,6 +118,11 @@ public class Inc2JpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findInc2(inc2.getId()) != null) {
+                throw new PreexistingEntityException("Inc2 " + inc2 + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();

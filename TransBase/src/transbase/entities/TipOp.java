@@ -8,7 +8,6 @@ package transbase.entities;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -31,9 +30,7 @@ public class TipOp implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "ID")
     private Integer id;
-    @Column(name = "tip")
     private String tip;
     @OneToMany(mappedBy = "tipOp")
     private List<Loadingpl> loadingplList;

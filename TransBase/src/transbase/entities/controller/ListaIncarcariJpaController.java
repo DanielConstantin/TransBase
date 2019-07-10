@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import transbase.entities.ListaIncarcari;
+import transbase.entities.TipTranzactie;
 import transbase.entities.controller.exceptions.NonexistentEntityException;
 import transbase.entities.controller.exceptions.PreexistingEntityException;
 
@@ -37,7 +38,16 @@ public class ListaIncarcariJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            TipTranzactie tip = listaIncarcari.getTip();
+            if (tip != null) {
+                tip = em.getReference(tip.getClass(), tip.getIdTip());
+                listaIncarcari.setTip(tip);
+            }
             em.persist(listaIncarcari);
+            if (tip != null) {
+                tip.getListaIncarcariList().add(listaIncarcari);
+                tip = em.merge(tip);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findListaIncarcari(listaIncarcari.getComanda()) != null) {
@@ -56,7 +66,22 @@ public class ListaIncarcariJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            ListaIncarcari persistentListaIncarcari = em.find(ListaIncarcari.class, listaIncarcari.getComanda());
+            TipTranzactie tipOld = persistentListaIncarcari.getTip();
+            TipTranzactie tipNew = listaIncarcari.getTip();
+            if (tipNew != null) {
+                tipNew = em.getReference(tipNew.getClass(), tipNew.getIdTip());
+                listaIncarcari.setTip(tipNew);
+            }
             listaIncarcari = em.merge(listaIncarcari);
+            if (tipOld != null && !tipOld.equals(tipNew)) {
+                tipOld.getListaIncarcariList().remove(listaIncarcari);
+                tipOld = em.merge(tipOld);
+            }
+            if (tipNew != null && !tipNew.equals(tipOld)) {
+                tipNew.getListaIncarcariList().add(listaIncarcari);
+                tipNew = em.merge(tipNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -85,6 +110,11 @@ public class ListaIncarcariJpaController implements Serializable {
                 listaIncarcari.getComanda();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The listaIncarcari with id " + id + " no longer exists.", enfe);
+            }
+            TipTranzactie tip = listaIncarcari.getTip();
+            if (tip != null) {
+                tip.getListaIncarcariList().remove(listaIncarcari);
+                tip = em.merge(tip);
             }
             em.remove(listaIncarcari);
             em.getTransaction().commit();

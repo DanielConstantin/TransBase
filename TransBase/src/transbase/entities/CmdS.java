@@ -7,21 +7,18 @@ package transbase.entities;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 /**
  *
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "cmdS")
 @NamedQueries({
     @NamedQuery(name = "CmdS.findAll", query = "SELECT c FROM CmdS c")
     , @NamedQuery(name = "CmdS.findByComanda", query = "SELECT c FROM CmdS c WHERE c.comanda = :comanda")
@@ -31,9 +28,7 @@ public class CmdS implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "comanda")
     private String comanda;
-    @Column(name = "lpl")
     private String lpl;
     @JoinColumn(name = "idcoms", referencedColumnName = "id")
     @ManyToOne

@@ -11,15 +11,12 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -28,7 +25,6 @@ import javax.persistence.TemporalType;
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "INC2")
 @NamedQueries({
     @NamedQuery(name = "Inc2.findAll", query = "SELECT i FROM Inc2 i")
     , @NamedQuery(name = "Inc2.findById", query = "SELECT i FROM Inc2 i WHERE i.id = :id")
@@ -59,30 +55,22 @@ public class Inc2 implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "cod")
     private Integer cod;
-    @Column(name = "PCT FRONTIERA")
+    @Column(name = "PCT_FRONTIERA")
     private String pctFrontiera;
-    @Column(name = "TARIF")
     private Integer tarif;
-    @Column(name = "TARIF ext")
+    @Column(name = "TARIF_ext")
     private Integer tARIFext;
-    @Column(name = "tarif intern")
+    @Column(name = "tarif_intern")
     private Integer tarifIntern;
-    @Column(name = "MONEDA")
     private String moneda;
-    @Column(name = "TERMEN PL")
+    @Column(name = "TERMEN_PL")
     private Integer termenPl;
-    @Column(name = "transportator")
     private String transportator;
-    @Column(name = "observatii")
     private String observatii;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "Gbruto")
     private Double gbruto;
     @Column(name = "data_SOSIRE_limita")
     @Temporal(TemporalType.TIMESTAMP)
@@ -95,17 +83,13 @@ public class Inc2 implements Serializable {
     private Date dataDescarcare;
     @Column(name = "CCUR_MARFA")
     private String ccurMarfa;
-    @Column(name = "handling")
     private String handling;
     @Column(name = "vama_export")
     private String vamaExport;
-    @Column(name = "taxevet")
     private Boolean taxevet;
-    @Column(name = "valtaxev")
     private Double valtaxev;
-    @Column(name = "monedataxev")
     private String monedataxev;
-    @Column(name = "tarif referinta")
+    @Column(name = "tarif_referinta")
     private Double tarifReferinta;
     @Column(name = "cmd_sc")
     private String cmdSc;

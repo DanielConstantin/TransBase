@@ -33,7 +33,6 @@ public class TipTransport implements Serializable {
     @Basic(optional = false)
     @Column(name = "Tip_transport")
     private String tiptransport;
-    @Column(name = "Descriere")
     private String descriere;
     @OneToMany(mappedBy = "tipTransp")
     private List<Inc2> inc2List;

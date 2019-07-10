@@ -11,17 +11,17 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  *
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "consignees")
 @NamedQueries({
     @NamedQuery(name = "Consignees.findAll", query = "SELECT c FROM Consignees c")
     , @NamedQuery(name = "Consignees.findByIdcons", query = "SELECT c FROM Consignees c WHERE c.idcons = :idcons")
@@ -29,29 +29,24 @@ import javax.persistence.Table;
     , @NamedQuery(name = "Consignees.findByConsigneeaddress", query = "SELECT c FROM Consignees c WHERE c.consigneeaddress = :consigneeaddress")
     , @NamedQuery(name = "Consignees.findByConsigneecui", query = "SELECT c FROM Consignees c WHERE c.consigneecui = :consigneecui")
     , @NamedQuery(name = "Consignees.findByCodPostal", query = "SELECT c FROM Consignees c WHERE c.codPostal = :codPostal")
-    , @NamedQuery(name = "Consignees.findByTara", query = "SELECT c FROM Consignees c WHERE c.tara = :tara")
-    , @NamedQuery(name = "Consignees.findByCodISOtara", query = "SELECT c FROM Consignees c WHERE c.codISOtara = :codISOtara")})
+    , @NamedQuery(name = "Consignees.findByTara", query = "SELECT c FROM Consignees c WHERE c.tara = :tara")})
 public class Consignees implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
-    @Column(name = "idcons")
     private Integer idcons;
-    @Column(name = "consigneename")
     private String consigneename;
-    @Column(name = "consigneeaddress")
     private String consigneeaddress;
-    @Column(name = "consigneecui")
     private String consigneecui;
     @Column(name = "cod_postal")
     private String codPostal;
-    @Column(name = "tara")
     private String tara;
-    @Column(name = "codISO_tara")
-    private String codISOtara;
     @OneToMany(mappedBy = "consignee")
     private List<Inc2> inc2List;
+    @JoinColumn(name = "codISO_tara", referencedColumnName = "Tara2L")
+    @ManyToOne
+    private TariISO codISOtara;
 
     public Consignees() {
     }
@@ -108,20 +103,20 @@ public class Consignees implements Serializable {
         this.tara = tara;
     }
 
-    public String getCodISOtara() {
-        return codISOtara;
-    }
-
-    public void setCodISOtara(String codISOtara) {
-        this.codISOtara = codISOtara;
-    }
-
     public List<Inc2> getInc2List() {
         return inc2List;
     }
 
     public void setInc2List(List<Inc2> inc2List) {
         this.inc2List = inc2List;
+    }
+
+    public TariISO getCodISOtara() {
+        return codISOtara;
+    }
+
+    public void setCodISOtara(TariISO codISOtara) {
+        this.codISOtara = codISOtara;
     }
 
     @Override

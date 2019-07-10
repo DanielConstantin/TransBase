@@ -13,56 +13,45 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="561.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="transbase.MainController">
+<AnchorPane id="AnchorPane" prefHeight="628.0" prefWidth="914.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="transbase.MainController">
     <children>
-      <ToolBar fx:id="toolBar" layoutX="3.0" layoutY="-2.0" prefHeight="62.0" prefWidth="701.0" style="-fx-background-color: white; -fx-border-color: orange; -fx-border-width: 2;" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+      <ToolBar fx:id="toolBar" layoutX="3.0" layoutY="-2.0" prefHeight="62.0" prefWidth="701.0" style="-fx-background-color: #b2b8c2; -fx-border-color: #eaff00; -fx-border-width: 2;" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
         <items>
-          <Button fx:id="btnLoadings" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="80.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: ;" text="Loadings" textFill="#cc731a">
+          <Button fx:id="btnLoadings" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="80.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Loadings" textFill="#eaff00">
                <font>
                   <Font name="Gill Sans MT Bold" size="12.0" />
                </font>
                <effect>
-                  <DropShadow />
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
                </effect>
             </Button>
-            <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="80.0" style="-fx-background-radius: 20 20 20 20;" text="Orders" textAlignment="CENTER" textFill="#cc731a">
+            <Button fx:id="btnOrders" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="80.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Orders" textAlignment="CENTER" textFill="#eaff00">
                <effect>
-                  <DropShadow />
-               </effect>
-               <font>
-                  <Font name="Gill Sans MT Bold" size="12.0" />
-               </font>
-            </Button>
-            <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="80.0" style="-fx-background-radius: 20 20 20 20;" text="Settings" textFill="#cc731a">
-               <effect>
-                  <DropShadow />
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
                </effect>
                <font>
                   <Font name="Gill Sans MT Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnLP" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="104.0" style="-fx-background-radius: 20 20 20 20;" text="Loading Places" textAlignment="CENTER" textFill="#cc731a" wrapText="true">
+            <Button fx:id="btnSettings" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="80.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Settings" textFill="#eaff00">
                <effect>
-                  <DropShadow />
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
                </effect>
                <font>
                   <Font name="Gill Sans MT Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnTransporters" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="91.0" style="-fx-background-radius: 20 20 20 20;" text="Transporters" textAlignment="CENTER" textFill="#cc731a" wrapText="true">
+            <Button fx:id="btnLP" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="104.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Loading Places" textAlignment="CENTER" textFill="#eaff00" wrapText="true">
                <effect>
-                  <DropShadow />
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
                </effect>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
                <font>
                   <Font name="Gill Sans MT Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnSuppliers" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="86.0" style="-fx-background-radius: 20 20 20 20;" text="Suppliers" textAlignment="CENTER" textFill="#cc731a" wrapText="true">
+            <Button fx:id="btnTransporters" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="96.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Transporters" textAlignment="CENTER" textFill="#eaff00" wrapText="true">
                <effect>
-                  <DropShadow />
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
                </effect>
                <opaqueInsets>
                   <Insets />
@@ -71,9 +60,20 @@
                   <Font name="Gill Sans MT Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnReports" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="44.0" prefWidth="86.0" style="-fx-background-radius: 20 20 20 20;" text="Reports" textAlignment="CENTER" textFill="#cc731a" wrapText="true">
+            <Button fx:id="btnSuppliers" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="86.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Suppliers" textAlignment="CENTER" textFill="#eaff00" wrapText="true">
                <effect>
-                  <DropShadow />
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
+               </effect>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <font>
+                  <Font name="Gill Sans MT Bold" size="12.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnReports" alignment="CENTER" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseClicked="#ButtonAction" prefHeight="44.0" prefWidth="86.0" style="-fx-background-radius: 20 20 20 20; -fx-background-color: #010c12; -fx-border-color: #eaff00; -fx-border-radius: 20 20 20 20;" text="Reports" textAlignment="CENTER" textFill="#eaff00" wrapText="true">
+               <effect>
+                  <DropShadow color="WHITE" height="36.81" radius="45.085" spread="0.52" width="145.53" />
                </effect>
                <opaqueInsets>
                   <Insets />
@@ -99,7 +99,7 @@
       </ToolBar>
       <VBox fx:id="vb" layoutX="1.0" layoutY="70.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="70.0">
          <children>
-            <SubScene fx:id="subscene" height="530.0" width="900.0">
+            <SubScene fx:id="subscene" fill="BLACK" height="584.0" opacity="0.61" width="993.0">
               <root>
                 <Region />
               </root>

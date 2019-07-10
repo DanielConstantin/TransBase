@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -142,7 +143,7 @@ public static String parseJsonStringstatic(String result)throws ParserConfigurat
  protected String encodeString(String str) 
  throws UnsupportedEncodingException
  {
-  return URLEncoder.encode(str.replace(".", "").replace(",","").replace(":", ""), "UTF-8");//.replace("+", "%20");
+  return URLEncoder.encode(str.replace(".", "").replace(",","").replace(":", ""), StandardCharsets.UTF_8.toString());//.replace("+", "%20");
  }
   
  /*

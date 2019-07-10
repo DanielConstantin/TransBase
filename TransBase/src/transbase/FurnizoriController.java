@@ -6,8 +6,12 @@
 package transbase;
 
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,21 +36,31 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.io.FileUtils;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PrefixSelectionComboBox;
 import org.controlsfx.control.ToggleSwitch;
 import org.controlsfx.control.table.TableFilter;
 import org.controlsfx.control.tableview2.FilteredTableView;
+import org.json.simple.parser.ParseException;
+import static transbase.LPController.lat;
+import static transbase.LPController.webvpage;
+import transbase.entities.ComandaTransp;
 import transbase.entities.FurnizoriClienti;
 import transbase.entities.Moneda;
 import transbase.entities.TariISO;
+import transbase.entities.controller.ComandaTranspJpaController;
 import transbase.entities.controller.FurnizoriClientiJpaController;
 import transbase.entities.controller.MonedaJpaController;
 import transbase.entities.controller.TariISOJpaController;
 import transbase.entities.controller.exceptions.NonexistentEntityException;
+import transbase.util.GeocodeFetcher;
 
 /**
  * FXML Controller class
@@ -158,21 +172,44 @@ public class FurnizoriController implements Initializable {
     private ImageView imgReports;
     @FXML
     private Label menReports;
-   
-    
     @FXML
     private TableView<FurnizoriClienti> tview;  
+    @FXML
+    private TableView<ComandaTransp> tblLP;
+     @FXML
+    private TableColumn<ComandaTransp, Long> tcolCod;
+
+    @FXML
+    private TableColumn<ComandaTransp, String> tcolDepozit;
+
+    @FXML
+    private TableColumn<ComandaTransp, String> tcolStr;
+
+    @FXML
+    private TableColumn<ComandaTransp, String> tcolCodOras;
     
+    @FXML
+    private TableColumn<ComandaTransp, String> tcolOras;
+    @FXML
+    private HBox hboxlp;
+    @FXML
+    private WebView webview;
     Stage stageTheLabelBelongs;
     
     static FurnizoriClienti isSelectedFz;
+    static ComandaTransp isSelectedLP;
     static int SelRowFz;
      TableFilter<FurnizoriClienti> tableFilter;
     ObservableList<FurnizoriClienti> lst; 
+    ObservableList<ComandaTransp> lstLP; 
     javax.swing.Timer tmrBannerFurnizori;
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("TransBasePU");
     ObservableList<TariISO> lstTari;
     ObservableList<Moneda> lstMoneda;
+     static String lat;
+    static String lon;
+    static int webvpage;
+    WebEngine we;
     /**
      * Initializes the controller class.
   */
@@ -257,8 +294,11 @@ public void ButtonHandler(MouseEvent ae){
         ds.setSpread(.4);
        // menTransporters.setEffect(ds);
         imgSuppliers.setEffect(ds);
-        
+        webvpage=2;
+        webview.setPrefSize( Double.MAX_VALUE, Double.MAX_VALUE );                  
+        we = webview.getEngine();
          initCol();
+         initColLP();
 //        FurnizoriClientiJpaController controllerCT = new FurnizoriClientiJpaController(emf);
 //        lst = FXCollections.observableArrayList(controllerCT.findFurnizoriClientiEntities());
      //   tview.setItems(lst);
@@ -282,11 +322,31 @@ public void ButtonHandler(MouseEvent ae){
         onEdit();
         
         }else{
-        
+        isSelectedFz=tview.getSelectionModel().getSelectedItem();
+        bindPlaceByFz();
            
         }
         });    
-           
+         tblLP.setOnMouseClicked((MouseEvent ev) -> {
+            if (ev.getClickCount() < 2) {
+        isSelectedLP=tblLP.getSelectionModel().getSelectedItem();
+      try {
+
+                if(prepareMap(isSelectedLP.getStr(),isSelectedLP.getOras(), isSelectedLP.getCodOras(),isSelectedLP.getTara().getTara2L())){
+                    
+                }else{
+              //      lblNotvalid.setVisible(true);
+              //      lblNotvalid.setText("Location can't be Geocoded");
+                    webview.setVisible(false);
+                }   } catch (IOException ex) {
+                Logger.getLogger(LPController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+        
+        }else{
+                
+            }
+            });    
        
 
         
@@ -330,6 +390,17 @@ public void ButtonHandler(MouseEvent ae){
         }
         }
     }
+    
+    public void bindPlaceByFz(){
+       ComandaTranspJpaController controllerCT = new ComandaTranspJpaController(emf); 
+//        lstLP =  (ObservableList<ComandaTransp>) controllerCT.getEntityManager().createNamedQuery("ComandaTransp.findByDenFurnizor")
+//                .setParameter("denFurnizor", isSelectedFz.getDenumire())
+//                .getResultList();
+         
+         lstLP =  FXCollections.observableArrayList(isSelectedFz.getComandaTranspList());
+         tblLP.setItems(lstLP);
+        
+    }
     public void getTarilst(){
          
          TariISOJpaController controllerT = new TariISOJpaController(emf);
@@ -348,6 +419,16 @@ public void ButtonHandler(MouseEvent ae){
        //  Object[] tarile = lstTari.toArray();
          cmbCurrency.setItems(lstMoneda);
      } 
+        public void initColLP(){
+        tcolCod.setCellValueFactory(new PropertyValueFactory<>("cod"));
+        tcolCod.setVisible(false);
+        tcolDepozit.setCellValueFactory(new PropertyValueFactory<>("depozit"));
+        tcolStr.setCellValueFactory(new PropertyValueFactory<>("str"));
+        tcolCodOras.setCellValueFactory(new PropertyValueFactory<>("codOras"));
+        tcolOras.setCellValueFactory(new PropertyValueFactory<>("oras"));
+        tcolTara.setCellValueFactory(new PropertyValueFactory<>("tara"));
+        tcolTara.setVisible(true);
+        }
     public void initCol(){
        tcolCodScala.setCellValueFactory(new PropertyValueFactory<>("codScala"));
         tcolDenumire.setCellValueFactory(new PropertyValueFactory<>("denumire"));
@@ -450,6 +531,69 @@ public void ButtonHandler(MouseEvent ae){
       cmbCurrency.setValue(null);
       cmbCountry.setValue(null);
     }
+      private boolean prepareMap(String Street, String City, String postalC, String isoCountry) throws IOException{
+       
+        if (postalC!=null && !postalC.matches("\\d*$")) {
+            postalC=(postalC.replaceAll("[^\\d]", ""));
+        }        
+         if(getGeolocation(Street, City, postalC, isoCountry)==false){
+             
+               lblNotvalid.setVisible(true);
+               lblNotvalid.setText("Location can't be Geocoded");
+               webview.setVisible(false);
+           }else{
+       
+//           lblNotvalid.setVisible(false);
+           webview.setVisible(true);
+    File htmlTemplateFile = new File("src/transbase/resources/maps.html");
+
+    String htmlString = FileUtils.readFileToString(htmlTemplateFile, Charset.forName("UTF-8") );
+
+    htmlString = htmlString.replace("$Lat", lat);
+    htmlString = htmlString.replace("$Long", lon);
+    URL urlHello;
+   
+    if(webvpage==2){
+    File newHtmlFile = new File("src/transbase/resources/Mnew.html");
+    FileUtils.writeStringToFile(newHtmlFile, htmlString,Charset.forName("UTF-8"));
+    // urlHello = getClass().getResource("resources/Mnew.html");
+    // System.out.println(urlHello.toString());
+        we.load(newHtmlFile.toURI().toString());
+      //  we.reload();
+        webvpage=1;}
+    else{
+        File newHtmlFile2 = new File("src/transbase/resources/Mnew2.html");
+        FileUtils.writeStringToFile(newHtmlFile2, htmlString,Charset.forName("UTF-8"));
+      //  urlHello = getClass().getResource("resources/Mnew2.html");
+        //System.out.println(urlHello.toString());
+          we.load(newHtmlFile2.toURI().toString());
+        //  we.reload();
+            webvpage=2;
+    }
+     
+           }
+    return true;
+    }
+     private boolean getGeolocation(String Street, String City,String postalC,String isoCountry){
+         try {
+           String str = GeocodeFetcher.getLoc(Street, City, postalC, isoCountry);
+       
+           String[] split = str.split(",");
+           System.out.println(split[0]);
+           System.out.println(split[1]);
+           lat = split[0];
+           lon = split[1];
+           return true;
+       } catch (ParserConfigurationException ex) {
+           Logger.getLogger(LPController.class.getName()).log(Level.SEVERE, null, ex);
+           return false;
+       } catch (ParseException ex) {
+           Logger.getLogger(LPController.class.getName()).log(Level.SEVERE, null, ex);
+           return false;
+       }  
+    }
+    
+    
     @FXML
     private void menuHandler(MouseEvent e) {
                

@@ -11,6 +11,8 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -27,7 +29,6 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "ListaIncarcari.findAll", query = "SELECT l FROM ListaIncarcari l")
     , @NamedQuery(name = "ListaIncarcari.findByDataI", query = "SELECT l FROM ListaIncarcari l WHERE l.dataI = :dataI")
     , @NamedQuery(name = "ListaIncarcari.findByComanda", query = "SELECT l FROM ListaIncarcari l WHERE l.comanda = :comanda")
-    , @NamedQuery(name = "ListaIncarcari.findByTip", query = "SELECT l FROM ListaIncarcari l WHERE l.tip = :tip")
     , @NamedQuery(name = "ListaIncarcari.findByReady", query = "SELECT l FROM ListaIncarcari l WHERE l.ready = :ready")
     , @NamedQuery(name = "ListaIncarcari.findByFurnizor", query = "SELECT l FROM ListaIncarcari l WHERE l.furnizor = :furnizor")
     , @NamedQuery(name = "ListaIncarcari.findByDestinatie", query = "SELECT l FROM ListaIncarcari l WHERE l.destinatie = :destinatie")
@@ -52,32 +53,20 @@ import javax.persistence.TemporalType;
 public class ListaIncarcari implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Column(name = "DataI")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataI;
     @Id
     @Basic(optional = false)
-    @Column(name = "Comanda")
     private String comanda;
-    @Column(name = "Tip")
-    private Integer tip;
-    @Column(name = "Ready")
     private Boolean ready;
-    @Column(name = "Furnizor")
     private String furnizor;
-    @Column(name = "Destinatie")
     private Integer destinatie;
-    @Column(name = "Transport")
     private String transport;
-    @Column(name = "Comentarii")
     private String comentarii;
-    @Column(name = "Camion")
     private String camion;
-    @Column(name = "Referinta")
     private String referinta;
     @Column(name = "N_paleti")
     private String npaleti;
-    @Column(name = "Aletele")
     private String aletele;
     @Column(name = "Factura Marfa")
     private Boolean facturaMarfa;
@@ -89,27 +78,23 @@ public class ListaIncarcari implements Serializable {
     @Column(name = "data fact transp")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataFactTransp;
-    @Column(name = "DataS")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataS;
-    @Column(name = "Updates")
     private String updates;
-    @Column(name = "DataIncReal")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataIncReal;
-    @Column(name = "DataSosBooking")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataSosBooking;
-    @Column(name = "DataSosReal")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataSosReal;
-    @Column(name = "DataDescarcare")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataDescarcare;
-    @Column(name = "OfertaTarif")
     private Short ofertaTarif;
     @Column(name = "Termen_pl")
     private Short termenpl;
+    @JoinColumn(name = "Tip", referencedColumnName = "IdTip")
+    @ManyToOne
+    private TipTranzactie tip;
 
     public ListaIncarcari() {
     }
@@ -132,14 +117,6 @@ public class ListaIncarcari implements Serializable {
 
     public void setComanda(String comanda) {
         this.comanda = comanda;
-    }
-
-    public Integer getTip() {
-        return tip;
-    }
-
-    public void setTip(Integer tip) {
-        this.tip = tip;
     }
 
     public Boolean getReady() {
@@ -308,6 +285,14 @@ public class ListaIncarcari implements Serializable {
 
     public void setTermenpl(Short termenpl) {
         this.termenpl = termenpl;
+    }
+
+    public TipTranzactie getTip() {
+        return tip;
+    }
+
+    public void setTip(TipTranzactie tip) {
+        this.tip = tip;
     }
 
     @Override

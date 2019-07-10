@@ -14,14 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  *
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "orasedest")
 @NamedQueries({
     @NamedQuery(name = "Orasedest.findAll", query = "SELECT o FROM Orasedest o")
     , @NamedQuery(name = "Orasedest.findByCodOrdest", query = "SELECT o FROM Orasedest o WHERE o.codOrdest = :codOrdest")
@@ -35,9 +33,7 @@ public class Orasedest implements Serializable {
     @Basic(optional = false)
     @Column(name = "cod_ordest")
     private Integer codOrdest;
-    @Column(name = "oras")
     private String oras;
-    @Column(name = "Tara")
     private String tara;
     @Column(name = "o_dest_tara")
     private String oDestTara;
@@ -113,7 +109,7 @@ public class Orasedest implements Serializable {
 
     @Override
     public String toString() {
-        return oras;
+        return "transbase.entities.Orasedest[ codOrdest=" + codOrdest + " ]";
     }
     
 }

@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -24,7 +23,6 @@ import javax.persistence.TemporalType;
  * @author daniel.constantin
  */
 @Entity
-@Table(name = "loadingpl")
 @NamedQueries({
     @NamedQuery(name = "Loadingpl.findAll", query = "SELECT l FROM Loadingpl l")
     , @NamedQuery(name = "Loadingpl.findByIdLp", query = "SELECT l FROM Loadingpl l WHERE l.idLp = :idLp")
@@ -45,17 +43,11 @@ public class Loadingpl implements Serializable {
     @Column(name = "DATA_INC")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataInc;
-    @Column(name = "GOODS")
     private String goods;
-    @Column(name = "TEMP")
     private String temp;
-    @Column(name = "NRPALETI")
     private String nrpaleti;
-    @Column(name = "ordine")
     private Integer ordine;
-    @Column(name = "referinta")
     private String referinta;
-    @Column(name = "ora")
     @Temporal(TemporalType.TIMESTAMP)
     private Date ora;
     @JoinColumn(name = "lodpl", referencedColumnName = "cod")

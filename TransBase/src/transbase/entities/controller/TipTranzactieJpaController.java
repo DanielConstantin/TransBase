@@ -6,13 +6,15 @@
 package transbase.entities.controller;
 
 import java.io.Serializable;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import transbase.entities.ListaIncarcari;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import transbase.entities.TipTranzactie;
 import transbase.entities.controller.exceptions.NonexistentEntityException;
 import transbase.entities.controller.exceptions.PreexistingEntityException;
@@ -33,11 +35,29 @@ public class TipTranzactieJpaController implements Serializable {
     }
 
     public void create(TipTranzactie tipTranzactie) throws PreexistingEntityException, Exception {
+        if (tipTranzactie.getListaIncarcariList() == null) {
+            tipTranzactie.setListaIncarcariList(new ArrayList<ListaIncarcari>());
+        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            List<ListaIncarcari> attachedListaIncarcariList = new ArrayList<ListaIncarcari>();
+            for (ListaIncarcari listaIncarcariListListaIncarcariToAttach : tipTranzactie.getListaIncarcariList()) {
+                listaIncarcariListListaIncarcariToAttach = em.getReference(listaIncarcariListListaIncarcariToAttach.getClass(), listaIncarcariListListaIncarcariToAttach.getComanda());
+                attachedListaIncarcariList.add(listaIncarcariListListaIncarcariToAttach);
+            }
+            tipTranzactie.setListaIncarcariList(attachedListaIncarcariList);
             em.persist(tipTranzactie);
+            for (ListaIncarcari listaIncarcariListListaIncarcari : tipTranzactie.getListaIncarcariList()) {
+                TipTranzactie oldTipOfListaIncarcariListListaIncarcari = listaIncarcariListListaIncarcari.getTip();
+                listaIncarcariListListaIncarcari.setTip(tipTranzactie);
+                listaIncarcariListListaIncarcari = em.merge(listaIncarcariListListaIncarcari);
+                if (oldTipOfListaIncarcariListListaIncarcari != null) {
+                    oldTipOfListaIncarcariListListaIncarcari.getListaIncarcariList().remove(listaIncarcariListListaIncarcari);
+                    oldTipOfListaIncarcariListListaIncarcari = em.merge(oldTipOfListaIncarcariListListaIncarcari);
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findTipTranzactie(tipTranzactie.getIdTip()) != null) {
@@ -56,7 +76,34 @@ public class TipTranzactieJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            TipTranzactie persistentTipTranzactie = em.find(TipTranzactie.class, tipTranzactie.getIdTip());
+            List<ListaIncarcari> listaIncarcariListOld = persistentTipTranzactie.getListaIncarcariList();
+            List<ListaIncarcari> listaIncarcariListNew = tipTranzactie.getListaIncarcariList();
+            List<ListaIncarcari> attachedListaIncarcariListNew = new ArrayList<ListaIncarcari>();
+            for (ListaIncarcari listaIncarcariListNewListaIncarcariToAttach : listaIncarcariListNew) {
+                listaIncarcariListNewListaIncarcariToAttach = em.getReference(listaIncarcariListNewListaIncarcariToAttach.getClass(), listaIncarcariListNewListaIncarcariToAttach.getComanda());
+                attachedListaIncarcariListNew.add(listaIncarcariListNewListaIncarcariToAttach);
+            }
+            listaIncarcariListNew = attachedListaIncarcariListNew;
+            tipTranzactie.setListaIncarcariList(listaIncarcariListNew);
             tipTranzactie = em.merge(tipTranzactie);
+            for (ListaIncarcari listaIncarcariListOldListaIncarcari : listaIncarcariListOld) {
+                if (!listaIncarcariListNew.contains(listaIncarcariListOldListaIncarcari)) {
+                    listaIncarcariListOldListaIncarcari.setTip(null);
+                    listaIncarcariListOldListaIncarcari = em.merge(listaIncarcariListOldListaIncarcari);
+                }
+            }
+            for (ListaIncarcari listaIncarcariListNewListaIncarcari : listaIncarcariListNew) {
+                if (!listaIncarcariListOld.contains(listaIncarcariListNewListaIncarcari)) {
+                    TipTranzactie oldTipOfListaIncarcariListNewListaIncarcari = listaIncarcariListNewListaIncarcari.getTip();
+                    listaIncarcariListNewListaIncarcari.setTip(tipTranzactie);
+                    listaIncarcariListNewListaIncarcari = em.merge(listaIncarcariListNewListaIncarcari);
+                    if (oldTipOfListaIncarcariListNewListaIncarcari != null && !oldTipOfListaIncarcariListNewListaIncarcari.equals(tipTranzactie)) {
+                        oldTipOfListaIncarcariListNewListaIncarcari.getListaIncarcariList().remove(listaIncarcariListNewListaIncarcari);
+                        oldTipOfListaIncarcariListNewListaIncarcari = em.merge(oldTipOfListaIncarcariListNewListaIncarcari);
+                    }
+                }
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -85,6 +132,11 @@ public class TipTranzactieJpaController implements Serializable {
                 tipTranzactie.getIdTip();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The tipTranzactie with id " + id + " no longer exists.", enfe);
+            }
+            List<ListaIncarcari> listaIncarcariList = tipTranzactie.getListaIncarcariList();
+            for (ListaIncarcari listaIncarcariListListaIncarcari : listaIncarcariList) {
+                listaIncarcariListListaIncarcari.setTip(null);
+                listaIncarcariListListaIncarcari = em.merge(listaIncarcariListListaIncarcari);
             }
             em.remove(tipTranzactie);
             em.getTransaction().commit();

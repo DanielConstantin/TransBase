@@ -10,11 +10,15 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import transbase.entities.Moneda;
+import transbase.entities.TariISO;
 import transbase.entities.ComandaTransp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
 import transbase.entities.FurnizoriClienti;
 import transbase.entities.controller.exceptions.NonexistentEntityException;
 import transbase.entities.controller.exceptions.PreexistingEntityException;
@@ -42,6 +46,16 @@ public class FurnizoriClientiJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Moneda moneda = furnizoriClienti.getMoneda();
+            if (moneda != null) {
+                moneda = em.getReference(moneda.getClass(), moneda.getIdMoneda());
+                furnizoriClienti.setMoneda(moneda);
+            }
+            TariISO tara = furnizoriClienti.getTara();
+            if (tara != null) {
+                tara = em.getReference(tara.getClass(), tara.getTara2L());
+                furnizoriClienti.setTara(tara);
+            }
             List<ComandaTransp> attachedComandaTranspList = new ArrayList<ComandaTransp>();
             for (ComandaTransp comandaTranspListComandaTranspToAttach : furnizoriClienti.getComandaTranspList()) {
                 comandaTranspListComandaTranspToAttach = em.getReference(comandaTranspListComandaTranspToAttach.getClass(), comandaTranspListComandaTranspToAttach.getCod());
@@ -49,6 +63,14 @@ public class FurnizoriClientiJpaController implements Serializable {
             }
             furnizoriClienti.setComandaTranspList(attachedComandaTranspList);
             em.persist(furnizoriClienti);
+            if (moneda != null) {
+                moneda.getFurnizoriClientiList().add(furnizoriClienti);
+                moneda = em.merge(moneda);
+            }
+            if (tara != null) {
+                tara.getFurnizoriClientiList().add(furnizoriClienti);
+                tara = em.merge(tara);
+            }
             for (ComandaTransp comandaTranspListComandaTransp : furnizoriClienti.getComandaTranspList()) {
                 FurnizoriClienti oldCodFurnizorOfComandaTranspListComandaTransp = comandaTranspListComandaTransp.getCodFurnizor();
                 comandaTranspListComandaTransp.setCodFurnizor(furnizoriClienti);
@@ -77,8 +99,20 @@ public class FurnizoriClientiJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             FurnizoriClienti persistentFurnizoriClienti = em.find(FurnizoriClienti.class, furnizoriClienti.getCodScala());
+            Moneda monedaOld = persistentFurnizoriClienti.getMoneda();
+            Moneda monedaNew = furnizoriClienti.getMoneda();
+            TariISO taraOld = persistentFurnizoriClienti.getTara();
+            TariISO taraNew = furnizoriClienti.getTara();
             List<ComandaTransp> comandaTranspListOld = persistentFurnizoriClienti.getComandaTranspList();
             List<ComandaTransp> comandaTranspListNew = furnizoriClienti.getComandaTranspList();
+            if (monedaNew != null) {
+                monedaNew = em.getReference(monedaNew.getClass(), monedaNew.getIdMoneda());
+                furnizoriClienti.setMoneda(monedaNew);
+            }
+            if (taraNew != null) {
+                taraNew = em.getReference(taraNew.getClass(), taraNew.getTara2L());
+                furnizoriClienti.setTara(taraNew);
+            }
             List<ComandaTransp> attachedComandaTranspListNew = new ArrayList<ComandaTransp>();
             for (ComandaTransp comandaTranspListNewComandaTranspToAttach : comandaTranspListNew) {
                 comandaTranspListNewComandaTranspToAttach = em.getReference(comandaTranspListNewComandaTranspToAttach.getClass(), comandaTranspListNewComandaTranspToAttach.getCod());
@@ -87,6 +121,22 @@ public class FurnizoriClientiJpaController implements Serializable {
             comandaTranspListNew = attachedComandaTranspListNew;
             furnizoriClienti.setComandaTranspList(comandaTranspListNew);
             furnizoriClienti = em.merge(furnizoriClienti);
+            if (monedaOld != null && !monedaOld.equals(monedaNew)) {
+                monedaOld.getFurnizoriClientiList().remove(furnizoriClienti);
+                monedaOld = em.merge(monedaOld);
+            }
+            if (monedaNew != null && !monedaNew.equals(monedaOld)) {
+                monedaNew.getFurnizoriClientiList().add(furnizoriClienti);
+                monedaNew = em.merge(monedaNew);
+            }
+            if (taraOld != null && !taraOld.equals(taraNew)) {
+                taraOld.getFurnizoriClientiList().remove(furnizoriClienti);
+                taraOld = em.merge(taraOld);
+            }
+            if (taraNew != null && !taraNew.equals(taraOld)) {
+                taraNew.getFurnizoriClientiList().add(furnizoriClienti);
+                taraNew = em.merge(taraNew);
+            }
             for (ComandaTransp comandaTranspListOldComandaTransp : comandaTranspListOld) {
                 if (!comandaTranspListNew.contains(comandaTranspListOldComandaTransp)) {
                     comandaTranspListOldComandaTransp.setCodFurnizor(null);
@@ -133,6 +183,16 @@ public class FurnizoriClientiJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The furnizoriClienti with id " + id + " no longer exists.", enfe);
             }
+            Moneda moneda = furnizoriClienti.getMoneda();
+            if (moneda != null) {
+                moneda.getFurnizoriClientiList().remove(furnizoriClienti);
+                moneda = em.merge(moneda);
+            }
+            TariISO tara = furnizoriClienti.getTara();
+            if (tara != null) {
+                tara.getFurnizoriClientiList().remove(furnizoriClienti);
+                tara = em.merge(tara);
+            }
             List<ComandaTransp> comandaTranspList = furnizoriClienti.getComandaTranspList();
             for (ComandaTransp comandaTranspListComandaTransp : comandaTranspList) {
                 comandaTranspListComandaTransp.setCodFurnizor(null);
@@ -156,11 +216,15 @@ public class FurnizoriClientiJpaController implements Serializable {
     }
 
     private List<FurnizoriClienti> findFurnizoriClientiEntities(boolean all, int maxResults, int firstResult) {
-        EntityManager em = getEntityManager();
+       EntityManager em = getEntityManager();
         try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(FurnizoriClienti.class));
-            Query q = em.createQuery(cq);
+             CriteriaBuilder cb=em.getCriteriaBuilder();//
+              CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            
+            Root<FurnizoriClienti> den=cq.from(FurnizoriClienti.class);  //
+            cq.orderBy(cb.asc(den.get("denumire")));  //
+            CriteriaQuery<FurnizoriClienti> select = cq.select(den);  //
+            TypedQuery<FurnizoriClienti> q = em.createQuery(select);  //
             if (!all) {
                 q.setMaxResults(maxResults);
                 q.setFirstResult(firstResult);
